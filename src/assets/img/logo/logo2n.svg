@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="273" height="25" viewBox="0 0 273 25">
+  <defs>
+    <style>
+      .cls-1 {
+        font-size: 21.731px;
+        filter: url(#filter);
+        fill: #fff;
+        font-family: Montserrat;
+        font-weight: 300;
+      }
+    </style>
+    <filter id="filter" x="14" y="4" width="244" height="18" filterUnits="userSpaceOnUse">
+      <feGaussianBlur result="blur" stdDeviation="2.333" in="SourceAlpha"/>
+      <feFlood result="flood" flood-color="#fff" flood-opacity="0.1"/>
+      <feComposite result="composite-2" operator="out" in2="blur"/>
+      <feComposite result="composite" operator="in" in2="SourceAlpha"/>
+      <feBlend result="blend" mode="screen" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+  <text id="Review_Database" data-name="Review Database" class="cls-1" x="12.333" y="20.875">Review Database</text>
+</svg>
