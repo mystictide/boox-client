@@ -43,9 +43,9 @@ function Login() {
   const { email, password } = formData;
 
   return (
-    <div className="account-container">
-      <div className="acc-overlay"></div>
-      <div className="account-content">
+    <div className="modal-container">
+      <div className="modal-overlay"></div>
+      <div className="modal-content">
         <section className="heading">
           <h1>Come aboard</h1>
           <FaTimes
@@ -54,12 +54,11 @@ function Login() {
             }}
           />
         </section>
-        <section className="form">
-          <form className="form-group" onSubmit={onSubmit}>
+        <section>
+          <form className="v-items r-gap-10" onSubmit={onSubmit}>
             <label>Email address</label>
             <input
               type="email"
-              className="form-control"
               id="email"
               name="email"
               value={email}
@@ -69,7 +68,6 @@ function Login() {
             <label>Password</label>
             <input
               type="password"
-              className="form-control"
               id="password"
               name="password"
               value={password}
@@ -77,7 +75,7 @@ function Login() {
               onChange={onChange}
             />
             <div className="functions">
-              <button type="submit">Sign in</button>
+              <button type="submit" className="btn-function">Sign in</button>
             </div>
           </form>
         </section>

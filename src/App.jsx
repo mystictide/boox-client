@@ -2,6 +2,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Header from "./components/header";
 import Home from "./pages/main/home";
+import UserSettings from "./pages/main/userSettings";
 import Footer from "./components/footer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -13,7 +14,8 @@ function App() {
           <Header />
           <div id="main" className="main">
             <Routes>
-              <Route path="/" element={<Home />}></Route>{" "}
+              <Route path="/" element={<Home />}></Route>
+              <Route path="/settings" element={<UserSettings />}></Route>
             </Routes>
           </div>
           <Footer />

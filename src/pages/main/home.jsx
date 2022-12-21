@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { resetLoginState } from "../../features/helpers/modalSlice";
-import Dashboard from "./dashboard";
 
 function Home() {
   const navigate = useNavigate();
@@ -17,10 +16,7 @@ function Home() {
     }
   }, [user, loginActive, navigate, dispatch]);
 
-  if (user && user.Token !== null) {
-    return <Dashboard />;
-  }
-  return <div className="content"></div>;
+  return <div className="content content-wrapper"></div>;
 }
 
 export default Home;

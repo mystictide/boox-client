@@ -1,8 +1,15 @@
 import axios from "axios";
+import Cookies from "universal-cookie";
 
-const API_URL = "https://localhost:7109/auth/";
+const API_URL = "https://localhost:7092/auth/";
 const headers = {
   "Content-Type": "application/json",
+};
+
+const setExpirationDate = function (days) {
+  var date = new Date(Date.now());
+  date.setDate(date.getDate() + days);
+  return date;
 };
 
 const register = async (userData) => {
@@ -15,8 +22,11 @@ const register = async (userData) => {
 
   var data = await axios(config)
     .then(function (response) {
-      console.log(response.data)
-      localStorage.setItem("user", JSON.stringify(response.data));
+      const cookies = new Cookies();
+      cookies.set("user", JSON.stringify(response.data), {
+        path: "/",
+        expires: setExpirationDate(13),
+      });
       return response.data;
     })
     .catch(function (error) {
@@ -36,7 +46,11 @@ const login = async (userData) => {
 
   var data = await axios(config)
     .then(function (response) {
-      localStorage.setItem("user", JSON.stringify(response.data));
+      const cookies = new Cookies();
+      cookies.set("user", JSON.stringify(response.data), {
+        path: "/",
+        expires: setExpirationDate(13),
+      });
       return response.data;
     })
     .catch(function (error) {
@@ -47,15 +61,20 @@ const login = async (userData) => {
 };
 
 const logout = async () => {
-  localStorage.removeItem("user");
+  const cookies = new Cookies();
+  cookies.remove("user");
 };
 
-const checkExistingUsername = async (userData) => {
+const changePassword = async (reqData) => {
   var config = {
-    method: "post",
-    url: API_URL + "cusername",
-    headers: headers,
-    data: JSON.stringify(userData),
+    method: "get",
+    url:
+      API_URL +
+      `change/password?currentPassword=${reqData.currentPassword}&newPassword=${reqData.newPassword}`,
+    headers: {
+      Authorization: "Bearer " + reqData.token,
+      "Content-Type": "application/json",
+    },
   };
 
   var data = await axios(config)
@@ -65,24 +84,92 @@ const checkExistingUsername = async (userData) => {
     .catch(function (error) {
       return { data: error.response.data, status: error.response.status };
     });
+
   return data;
 };
 
-const checkExistingMail = async (userData) => {
+const updateEmail = async (reqData) => {
   var config = {
-    method: "post",
-    url: API_URL + "cmail",
-    headers: headers,
-    data: JSON.stringify(userData),
+    method: "get",
+    url: API_URL + `update/email?email=${reqData.email}`,
+    headers: {
+      Authorization: "Bearer " + reqData.token,
+      "Content-Type": "application/json",
+    },
   };
 
   var data = await axios(config)
     .then(function (response) {
+      const cookies = new Cookies();
+      var user = cookies.get("user");
+      user.Email = reqData.email;
+      cookies.set("user", JSON.stringify(user), {
+        path: "/",
+        expires: setExpirationDate(13),
+      });
       return response.data;
     })
     .catch(function (error) {
       return { data: error.response.data, status: error.response.status };
     });
+
+  return data;
+};
+
+const manageAddress = async (reqData) => {
+  var config = {
+    method: "post",
+    url: API_URL + "manage/addresses",
+    headers: {
+      Authorization: "Bearer " + reqData.token,
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify(reqData.address),
+  };
+
+  var data = await axios(config)
+    .then(function (response) {
+      const cookies = new Cookies();
+      var user = cookies.get("user");
+      user.Addresses = response.data;
+      cookies.set("user", JSON.stringify(user), {
+        path: "/",
+        expires: setExpirationDate(13),
+      });
+      return response.data;
+    })
+    .catch(function (error) {
+      return { data: error.response.data, status: error.response.status };
+    });
+
+  return data;
+};
+
+const getAddresses = async (reqData) => {
+  var config = {
+    method: "get",
+    url: API_URL + "get/addresses",
+    headers: {
+      Authorization: "Bearer " + reqData.token,
+      "Content-Type": "application/json",
+    },
+  };
+
+  var data = await axios(config)
+    .then(function (response) {
+      const cookies = new Cookies();
+      var user = cookies.get("user");
+      user.Addresses = response.data;
+      cookies.set("user", JSON.stringify(user), {
+        path: "/",
+        expires: setExpirationDate(13),
+      });
+      return response.data;
+    })
+    .catch(function (error) {
+      return { data: error.response.data, status: error.response.status };
+    });
+
   return data;
 };
 
@@ -90,8 +177,10 @@ const authService = {
   register,
   login,
   logout,
-  checkExistingMail,
-  checkExistingUsername,
+  changePassword,
+  updateEmail,
+  manageAddress,
+  getAddresses,
 };
 
 export default authService;

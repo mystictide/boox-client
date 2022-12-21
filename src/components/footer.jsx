@@ -3,14 +3,11 @@ import { ImTwitter, ImFacebook, ImInstagram, ImYoutube } from "react-icons/im";
 function Footer() {
   return (
     <footer>
-      <div className="footer-wrapper">
+      <div className="footer-wrapper content-wrapper">
         <nav className="footer-nav">
           <ul>
             <li>About</li>
-            <li>News</li>
             <li>Help</li>
-            <li>Terms</li>
-            <li>API</li>
             <li>Repository</li>
             <li>Contact</li>
           </ul>
@@ -40,8 +37,7 @@ function Footer() {
           </ul>
         </div>
         <h6 className="copyright">
-          © TRDB - The Review Database, Made by a lone mad-man. Film data
-          provided most generously by TMDb.
+          © Boox - Exchanger. Made by a lone mad-man with copious amount of coffee.
         </h6>
       </div>
     </footer>

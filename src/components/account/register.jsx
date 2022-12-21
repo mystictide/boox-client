@@ -7,7 +7,10 @@ import {
   checkExistingUsername,
 } from "../../features/auth/validationSlice";
 import { useNavigate } from "react-router-dom";
-import { modalSlice } from "../../features/helpers/modalSlice";
+import {
+  modalSlice,
+  resetRegisterState,
+} from "../../features/helpers/modalSlice";
 import { FaTimes } from "react-icons/fa";
 
 function Register() {
@@ -38,7 +41,7 @@ function Register() {
       navigate("/");
     }
     if (isSuccess) {
-      navigate("/login");
+      dispatch(resetRegisterState());
     }
     if (isError) {
       toast.error(message);
@@ -98,28 +101,26 @@ function Register() {
   };
 
   return (
-    <div className="account-container">
-      <div className="acc-overlay"></div>
-      <div className="account-content">
+    <div className="modal-container">
+      <div className="modal-overlay"></div>
+      <div className="modal-content">
         <section className="heading">
-          <h1>Join ReviewDB</h1>
+          <h1>Join Boox!</h1>
           <FaTimes
             onClick={() => {
               dispatch(modalSlice.actions.updateRegisterState());
             }}
           />
         </section>
-        <section className="form">
-          <form className="form-group" onSubmit={onSubmit}>
+        <section>
+          <form className="v-items r-gap-10" onSubmit={onSubmit}>
             <label>Username</label>
             <input
               type="text"
-              className="form-control"
               id="username"
               name="username"
               value={username}
               placeholder="enter a username"
-              // onChange={onChange}
               onChange={(e) =>
                 setFormData((prevState) => ({
                   ...prevState,
@@ -135,7 +136,6 @@ function Register() {
             <label>Email address</label>
             <input
               type="email"
-              className="form-control"
               id="email"
               name="email"
               value={email}
@@ -155,7 +155,6 @@ function Register() {
             <label>Password</label>
             <input
               type="password"
-              className="form-control"
               id="password"
               name="password"
               value={password}
@@ -175,7 +174,9 @@ function Register() {
               ""
             )}
             <div className="functions">
-              <button type="submit">Sign up</button>
+              <button type="submit" className="btn-function">
+                Sign up
+              </button>
             </div>
           </form>
         </section>

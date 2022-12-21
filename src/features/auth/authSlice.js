@@ -1,12 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "./authService";
+import Cookies from "universal-cookie";
 
-const user = JSON.parse(localStorage.getItem("user"));
+const cookies = new Cookies();
+const user = cookies.get("user");
 
 const initialState = {
   user: user ? user : null,
   isError: false,
+  isSettingsError: false,
   isSuccess: false,
+  isSettingsSuccess: false,
   isLoading: false,
   isLoggedOut: false,
   message: "",
@@ -54,6 +58,90 @@ export const logout = createAsyncThunk(
   async () => await authService.logout()
 );
 
+export const UpdateEmail = createAsyncThunk(
+  "user/update/email",
+  async (reqData, thunkAPI) => {
+    try {
+      const response = await authService.updateEmail(reqData);
+      if (response.status === 500) {
+        return thunkAPI.rejectWithValue(response);
+      }
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const ChangePassword = createAsyncThunk(
+  "user/change/password",
+  async (reqData, thunkAPI) => {
+    try {
+      const response = await authService.changePassword(reqData);
+      if (response.status === 500) {
+        return thunkAPI.rejectWithValue(response);
+      }
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const ManageAddress = createAsyncThunk(
+  "user/manage/addresses",
+  async (reqData, thunkAPI) => {
+    try {
+      const response = await authService.manageAddress(reqData);
+      if (response.status === 500) {
+        return thunkAPI.rejectWithValue(response);
+      }
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const GetAddresses = createAsyncThunk(
+  "user/get/addresses",
+  async (reqData, thunkAPI) => {
+    try {
+      const response = await authService.getAddresses(reqData);
+      if (response.status === 500) {
+        return thunkAPI.rejectWithValue(response);
+      }
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -65,8 +153,13 @@ export const authSlice = createSlice({
       state.isLoggedOut = false;
       state.message = "";
     },
+    resetSettings: (state) => {
+      state.isSettingsError = false;
+      state.isSettingsSuccess = false;
+      state.message = "";
+    },
     update: (state) => {
-      state.user = JSON.parse(localStorage.getItem("user"));
+      state.user = JSON.parse(cookies.get("user"));
     },
   },
   extraReducers: (builder) => {
@@ -111,9 +204,64 @@ export const authSlice = createSlice({
         state.isSuccess = false;
         state.isLoading = false;
         state.isLoggedOut = true;
+      }).addCase(UpdateEmail.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(UpdateEmail.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSettingsError = false;
+        state.isSettingsSuccess = true;
+      })
+      .addCase(UpdateEmail.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSettingsSuccess = false;
+        state.isSettingsError = true;
+        state.message = action.payload;
+      })
+      .addCase(ChangePassword.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(ChangePassword.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSettingsError = false;
+        state.isSettingsSuccess = true;
+      })
+      .addCase(ChangePassword.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSettingsSuccess = false;
+        state.isSettingsError = true;
+        state.message = action.payload;
+      })
+      .addCase(ManageAddress.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(ManageAddress.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSettingsError = false;
+        state.isSettingsSuccess = true;
+      })
+      .addCase(ManageAddress.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSettingsSuccess = false;
+        state.isSettingsError = true;
+        state.message = action.payload;
+      })
+      .addCase(GetAddresses.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(GetAddresses.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSettingsError = false;
+        state.isSettingsSuccess = true;
+      })
+      .addCase(GetAddresses.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSettingsSuccess = false;
+        state.isSettingsError = true;
+        state.message = action.payload;
       });
   },
 });
 
-export const { reset, update } = authSlice.actions;
+export const { reset, resetSettings, update } = authSlice.actions;
 export default authSlice.reducer;
