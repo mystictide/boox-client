@@ -121,27 +121,6 @@ export const ManageAddress = createAsyncThunk(
   }
 );
 
-export const GetAddresses = createAsyncThunk(
-  "user/get/addresses",
-  async (reqData, thunkAPI) => {
-    try {
-      const response = await authService.getAddresses(reqData);
-      if (response.status === 500) {
-        return thunkAPI.rejectWithValue(response);
-      }
-      return response;
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      return thunkAPI.rejectWithValue(message);
-    }
-  }
-);
-
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -159,7 +138,7 @@ export const authSlice = createSlice({
       state.message = "";
     },
     update: (state) => {
-      state.user = JSON.parse(cookies.get("user"));
+      state.user = cookies.get("user");
     },
   },
   extraReducers: (builder) => {
@@ -204,7 +183,8 @@ export const authSlice = createSlice({
         state.isSuccess = false;
         state.isLoading = false;
         state.isLoggedOut = true;
-      }).addCase(UpdateEmail.pending, (state) => {
+      })
+      .addCase(UpdateEmail.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(UpdateEmail.fulfilled, (state, action) => {
@@ -241,20 +221,6 @@ export const authSlice = createSlice({
         state.isSettingsSuccess = true;
       })
       .addCase(ManageAddress.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isSettingsSuccess = false;
-        state.isSettingsError = true;
-        state.message = action.payload;
-      })
-      .addCase(GetAddresses.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(GetAddresses.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSettingsError = false;
-        state.isSettingsSuccess = true;
-      })
-      .addCase(GetAddresses.rejected, (state, action) => {
         state.isLoading = false;
         state.isSettingsSuccess = false;
         state.isSettingsError = true;

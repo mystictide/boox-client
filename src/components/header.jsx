@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { modalSlice } from "../features/helpers/modalSlice";
 import RegisterModal from "./account/register";
 import LoginModal from "./account/login";
@@ -8,13 +8,10 @@ import { BiSearch } from "react-icons/bi";
 import UserDropdown from "./helpers/userDropdown";
 
 const Header = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { loginActive, registerActive } = useSelector((state) => state.modals);
   const [userDropdown, setUserDropdown] = useState(false);
-
-  useEffect(() => {}, [user, loginActive, registerActive, navigate, dispatch]);
 
   return (
     <>

@@ -145,34 +145,6 @@ const manageAddress = async (reqData) => {
   return data;
 };
 
-const getAddresses = async (reqData) => {
-  var config = {
-    method: "get",
-    url: API_URL + "get/addresses",
-    headers: {
-      Authorization: "Bearer " + reqData.token,
-      "Content-Type": "application/json",
-    },
-  };
-
-  var data = await axios(config)
-    .then(function (response) {
-      const cookies = new Cookies();
-      var user = cookies.get("user");
-      user.Addresses = response.data;
-      cookies.set("user", JSON.stringify(user), {
-        path: "/",
-        expires: setExpirationDate(13),
-      });
-      return response.data;
-    })
-    .catch(function (error) {
-      return { data: error.response.data, status: error.response.status };
-    });
-
-  return data;
-};
-
 const authService = {
   register,
   login,
@@ -180,7 +152,6 @@ const authService = {
   changePassword,
   updateEmail,
   manageAddress,
-  getAddresses,
 };
 
 export default authService;

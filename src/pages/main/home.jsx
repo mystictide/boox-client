@@ -11,7 +11,7 @@ function Home() {
   const { loginActive } = useSelector((state) => state.modals);
 
   useEffect(() => {
-    if (user) {
+    if (user && loginActive) {
       dispatch(resetLoginState());
     }
   }, [user, loginActive, navigate, dispatch]);

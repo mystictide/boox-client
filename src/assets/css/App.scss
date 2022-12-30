@@ -167,13 +167,15 @@ input {
 }
 
 input[type="password"] {
-    font-family: Verdana;
-    letter-spacing: 0.1em;
+    &:focus {
+        font-family: Verdana;
+        letter-spacing: 0.1em;
+    }
 }
 
 button {
     background: none;
-    color: inherit;
+    color: $font-main;
     border: none;
     outline: inherit;
     opacity: 1;
@@ -238,6 +240,10 @@ a {
         flex-direction: row;
         align-items: center;
         justify-content: center;
+    }
+    
+    .select{
+        color: $bg-dark;
     }
 
     .seperator {
@@ -365,7 +371,7 @@ a {
                 height: 116px;
                 color: $bg-dark;
                 border-radius: 3px;
-                background-color: $bg-main;
+
                 .address-info {
                     display: flex;
                     flex-direction: column;
@@ -379,6 +385,9 @@ a {
                     justify-content: flex-end;
                     align-self: flex-end;
                 }
+            }
+            li.address {
+                background-color: $bg-main;
             }
         }
     }
