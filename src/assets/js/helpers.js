@@ -1,3 +1,9 @@
+export function setExpirationDate(days) {
+  var date = new Date(Date.now());
+  date.setDate(date.getDate() + days);
+  return date;
+}
+
 export function formatPrettyURL(string) {
   //slugify
   const a =

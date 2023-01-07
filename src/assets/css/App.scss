@@ -173,6 +173,11 @@ input[type="password"] {
     }
 }
 
+textarea {
+    @extend input;
+    max-width: 100%;
+}
+
 button {
     background: none;
     color: $font-main;
@@ -241,8 +246,8 @@ a {
         align-items: center;
         justify-content: center;
     }
-    
-    .select{
+
+    .select {
         color: $bg-dark;
     }
 
@@ -407,13 +412,14 @@ a {
                 flex-direction: column;
                 width: 50%;
             }
+
             .single {
                 display: flex;
-                flex-direction: row;
-                width: 100%;
+                flex-direction: column;
+                width: 90%;
             }
 
-            .settings {
+            .form-gap {
                 column-gap: 2rem;
             }
         }
@@ -517,6 +523,10 @@ a {
                 }
             }
         }
+    }
+
+    .modal-content.address {
+        min-width: 465px;
     }
 }
 

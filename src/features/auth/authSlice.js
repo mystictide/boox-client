@@ -11,6 +11,7 @@ const initialState = {
   isSettingsError: false,
   isSuccess: false,
   isSettingsSuccess: false,
+  isPasswordChanged: false,
   isLoading: false,
   isLoggedOut: false,
   message: "",
@@ -121,6 +122,27 @@ export const ManageAddress = createAsyncThunk(
   }
 );
 
+export const DeleteAddress = createAsyncThunk(
+  "user/delete/address",
+  async (reqData, thunkAPI) => {
+    try {
+      const response = await authService.deleteAddress(reqData);
+      if (response.status === 500) {
+        return thunkAPI.rejectWithValue(response);
+      }
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -135,6 +157,7 @@ export const authSlice = createSlice({
     resetSettings: (state) => {
       state.isSettingsError = false;
       state.isSettingsSuccess = false;
+      state.isPasswordChanged = false;
       state.message = "";
     },
     update: (state) => {
@@ -191,6 +214,7 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.isSettingsError = false;
         state.isSettingsSuccess = true;
+        state.user = cookies.get("user");
       })
       .addCase(UpdateEmail.rejected, (state, action) => {
         state.isLoading = false;
@@ -204,12 +228,11 @@ export const authSlice = createSlice({
       .addCase(ChangePassword.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSettingsError = false;
-        state.isSettingsSuccess = true;
+        state.isPasswordChanged = true;
       })
       .addCase(ChangePassword.rejected, (state, action) => {
         state.isLoading = false;
-        state.isSettingsSuccess = false;
-        state.isSettingsError = true;
+        state.isPasswordChanged = false;
         state.message = action.payload;
       })
       .addCase(ManageAddress.pending, (state) => {
@@ -219,8 +242,24 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.isSettingsError = false;
         state.isSettingsSuccess = true;
+        state.user = cookies.get("user");
       })
       .addCase(ManageAddress.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSettingsSuccess = false;
+        state.isSettingsError = true;
+        state.message = action.payload;
+      })
+      .addCase(DeleteAddress.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(DeleteAddress.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSettingsError = false;
+        state.isSettingsSuccess = true;
+        state.user = cookies.get("user");
+      })
+      .addCase(DeleteAddress.rejected, (state, action) => {
         state.isLoading = false;
         state.isSettingsSuccess = false;
         state.isSettingsError = true;

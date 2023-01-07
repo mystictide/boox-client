@@ -3,10 +3,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { login } from "../../features/auth/authSlice";
-import { modalSlice } from "../../features/helpers/modalSlice";
 import { FaTimes } from "react-icons/fa";
 
-function Login() {
+function Login({ modalControl }) {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -50,7 +49,7 @@ function Login() {
           <h1>Come aboard</h1>
           <FaTimes
             onClick={() => {
-              dispatch(modalSlice.actions.updateLoginState());
+              modalControl(false);
             }}
           />
         </section>
@@ -75,7 +74,9 @@ function Login() {
               onChange={onChange}
             />
             <div className="functions">
-              <button type="submit" className="btn-function">Sign in</button>
+              <button type="submit" className="btn-function">
+                Sign in
+              </button>
             </div>
           </form>
         </section>

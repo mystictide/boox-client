@@ -1,6 +1,8 @@
 import axios from "axios";
+import Cookies from "universal-cookie";
 
-const user = JSON.parse(localStorage.getItem("user")) ?? 0;
+const cookies = new Cookies();
+const user = cookies.get("user") ?? 0;
 const API_URL = "https://localhost:7092/auth/";
 const headers = {
   Authorization: "Bearer " + user.Token,

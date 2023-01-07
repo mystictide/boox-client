@@ -7,13 +7,9 @@ import {
   checkExistingUsername,
 } from "../../features/auth/validationSlice";
 import { useNavigate } from "react-router-dom";
-import {
-  modalSlice,
-  resetRegisterState,
-} from "../../features/helpers/modalSlice";
 import { FaTimes } from "react-icons/fa";
 
-function Register() {
+function Register({ modalControl }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -27,7 +23,7 @@ function Register() {
     vPassword: true,
   });
 
-  const { user, isSuccess, isError, message } = useSelector(
+  const { user, isError, message } = useSelector(
     (state) => state.auth
   );
   const { username, email, password } = formData;
@@ -40,15 +36,11 @@ function Register() {
     if (user) {
       navigate("/");
     }
-    if (isSuccess) {
-      dispatch(resetRegisterState());
-    }
     if (isError) {
       toast.error(message);
     }
   }, [
     user,
-    isSuccess,
     isError,
     message,
     navigate,
@@ -108,7 +100,7 @@ function Register() {
           <h1>Join Boox!</h1>
           <FaTimes
             onClick={() => {
-              dispatch(modalSlice.actions.updateRegisterState());
+              modalControl(false);
             }}
           />
         </section>

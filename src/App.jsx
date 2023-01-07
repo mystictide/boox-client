@@ -5,6 +5,7 @@ import Home from "./pages/main/home";
 import UserSettings from "./pages/main/userSettings";
 import Footer from "./components/footer";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ListingManager from "./pages/listing/listingManager";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />}></Route>
               <Route path="/settings" element={<UserSettings />}></Route>
+              <Route path="/listing/new" element={<ListingManager />}></Route>
             </Routes>
           </div>
           <Footer />

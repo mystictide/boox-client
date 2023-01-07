@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import { modalSlice } from "../features/helpers/modalSlice";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import RegisterModal from "./account/register";
 import LoginModal from "./account/login";
 import { BiSearch } from "react-icons/bi";
 import UserDropdown from "./helpers/userDropdown";
 
 const Header = () => {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
-  const { loginActive, registerActive } = useSelector((state) => state.modals);
   const [userDropdown, setUserDropdown] = useState(false);
+  const [loginActive, setLoginState] = useState(false);
+  const [registerActive, setRegisterState] = useState(false);
 
   return (
     <>
@@ -28,21 +28,34 @@ const Header = () => {
               </button>
             </li>
             {user ? (
-              <li style={{ position: "relative" }}>
-                <button
-                  type="button"
-                  className="btn-regular"
-                  onMouseEnter={(e) => setUserDropdown(true)}
-                  onClick={(e) => setUserDropdown(true)}
-                >
-                  {user.Username}
-                </button>
-                {userDropdown ? (
-                  <UserDropdown setUserDropdown={setUserDropdown} />
-                ) : (
-                  ""
-                )}
-              </li>
+              <>
+                <li style={{ position: "relative" }}>
+                  <button
+                    type="button"
+                    className="btn-regular"
+                    onMouseEnter={(e) => setUserDropdown(true)}
+                    onClick={(e) => setUserDropdown(true)}
+                  >
+                    {user.Username}
+                  </button>
+                  {userDropdown ? (
+                    <UserDropdown setUserDropdown={setUserDropdown} />
+                  ) : (
+                    ""
+                  )}
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className="btn-function"
+                    onClick={() => {
+                      navigate("/listing/new");
+                    }}
+                  >
+                    Create Listing
+                  </button>
+                </li>
+              </>
             ) : (
               <>
                 <li>
@@ -50,7 +63,7 @@ const Header = () => {
                     type="button"
                     className="btn-regular"
                     onClick={() => {
-                      dispatch(modalSlice.actions.updateLoginState());
+                      setLoginState(true);
                     }}
                   >
                     Sign in
@@ -61,7 +74,7 @@ const Header = () => {
                     type="button"
                     className="btn-regular"
                     onClick={() => {
-                      dispatch(modalSlice.actions.updateRegisterState());
+                      setRegisterState(true);
                     }}
                   >
                     Register
@@ -114,8 +127,8 @@ const Header = () => {
           </div>
         </nav>
       </header>
-      {loginActive ? <LoginModal /> : ""}
-      {registerActive ? <RegisterModal /> : ""}
+      {loginActive ? <LoginModal modalControl={setLoginState} /> : ""}
+      {registerActive ? <RegisterModal modalControl={setRegisterState} /> : ""}
     </>
   );
 };
