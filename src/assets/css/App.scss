@@ -176,6 +176,7 @@ input[type="password"] {
 textarea {
     @extend input;
     max-width: 100%;
+    min-width: 100%;
 }
 
 button {
@@ -226,6 +227,10 @@ a {
     text-decoration: none;
     @include transition();
     @include anchor-hover-color();
+}
+
+.img-preview {
+    max-width: 260px;
 }
 
 .error {
@@ -362,7 +367,11 @@ a {
         padding: 1rem;
         border-radius: 3px;
 
-        .addresses {
+        textarea {
+            min-height: 100px;
+            max-height: 300px;
+        }
+        .boxes {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -385,6 +394,14 @@ a {
                     height: 75%;
                     width: 100%;
                 }
+                .photo-info {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    height: 75%;
+                    width: 100%;
+                }
                 .functions {
                     display: inherit;
                     justify-content: flex-end;
@@ -392,6 +409,10 @@ a {
                 }
             }
             li.address {
+                background-color: $bg-main;
+            }
+            li.photo {
+                height: 150px;
                 background-color: $bg-main;
             }
         }
@@ -416,7 +437,7 @@ a {
             .single {
                 display: flex;
                 flex-direction: column;
-                width: 90%;
+                width: 100%;
             }
 
             .form-gap {

@@ -77,7 +77,12 @@ function UserSettings() {
 
   const onAddressEdit = (e) => {
     setAddress(e);
-    dispatch(modalSlice.actions.updateAddressState());
+    setAddressState(true);
+  };
+
+  const addNewAddress = (e) => {
+    setAddress(null);
+    setAddressState(true);
   };
 
   const getConfirm = (id) => {
@@ -152,7 +157,7 @@ function UserSettings() {
                   <h3>Addresses</h3>
                 </section>
                 <section className="section-forms">
-                  <ul className="h-list c-gap-10 r-gap-10 addresses">
+                  <ul className="h-list c-gap-10 r-gap-10 boxes">
                     {user.Addresses
                       ? user.Addresses.map((address, index) => (
                           <li className="address" key={index}>
@@ -189,7 +194,7 @@ function UserSettings() {
                         <button
                           className="btn-function"
                           onClick={() => {
-                            setAddressState(true);
+                            addNewAddress(true);
                           }}
                         >
                           Add a new address
@@ -201,7 +206,14 @@ function UserSettings() {
               </div>
             </div>
           </div>
-          {addressActive ? <AddressManager userAddress={address} modalControl={setAddressState}/> : ""}
+          {addressActive ? (
+            <AddressManager
+              userAddress={address}
+              modalControl={setAddressState}
+            />
+          ) : (
+            ""
+          )}
           {confirmActive ? (
             <Confirmation func={deleteAddress} modalControl={setConfirmState} />
           ) : (

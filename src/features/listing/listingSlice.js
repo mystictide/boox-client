@@ -11,6 +11,7 @@ const initialState = {
   genres: genres ? genres : null,
   isError: false,
   isSuccess: false,
+  isPhotoUploaded: false,
   isLoading: false,
   message: "",
 };
@@ -36,6 +37,48 @@ export const GetGenres = createAsyncThunk(
   }
 );
 
+export const UploadPhoto = createAsyncThunk(
+  "listing/upload/photo",
+  async (reqData, thunkAPI) => {
+    try {
+      const response = await listingService.uploadPhoto(reqData);
+      if (response.status === 500) {
+        return thunkAPI.rejectWithValue(response);
+      }
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const ManageListing = createAsyncThunk(
+  "listing/manage",
+  async (reqData, thunkAPI) => {
+    try {
+      const response = await listingService.manageListing(reqData);
+      if (response.status === 500) {
+        return thunkAPI.rejectWithValue(response);
+      }
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const listingSlice = createSlice({
   name: "listing",
   initialState,
@@ -43,14 +86,35 @@ export const listingSlice = createSlice({
     reset: (state) => {
       state.isLoading = false;
       state.isSuccess = false;
+      state.isPhotoUploaded = false;
       state.isError = false;
       state.message = "";
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(GetGenres.fulfilled, (state, action) => {
-      state.genres = action.payload;
-    });
+    builder
+      .addCase(GetGenres.fulfilled, (state, action) => {
+        state.genres = action.payload;
+      })
+      .addCase(UploadPhoto.fulfilled, (state, action) => {
+        state.isPhotoUploaded = true;
+        state.listing = action.payload;
+      })
+      .addCase(ManageListing.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(ManageListing.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.listing = action.payload;
+      })
+      .addCase(ManageListing.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.message = action.payload;
+      });
   },
 });
 

@@ -1,21 +1,31 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { reset } from "../../features/listing/listingSlice";
-import countryList from "react-select-country-list";
 import { toast } from "react-toastify";
 import Select from "react-select";
+import { useNavigate } from "react-router-dom";
+import {
+  ManageListing,
+  reset,
+  UploadPhoto,
+} from "../../features/listing/listingSlice";
+import countryList from "react-select-country-list";
+import { BsXOctagonFill } from "react-icons/bs";
+import PhotoManager from "../../components/modals/photoManager";
+import Confirmation from "../../components/modals/confirmation";
 
 function ListingManager({ item }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { user } = useSelector((state) => state.auth);
-  const { genres, isSuccess, isError, message } = useSelector(
-    (state) => state.listing
-  );
+  const { listing, genres, isSuccess, isPhotoUploaded, isError, message } =
+    useSelector((state) => state.listing);
   const [country, setCountry] = useState(item ? { label: item.country } : "");
   const [genre, setGenres] = useState(item ? { label: item.genres } : "");
+
+  const [confirmActive, setConfirmState] = useState(false);
+  const [photoActive, setPhotoState] = useState(false);
+  const [selectedID, setID] = useState(null);
 
   const countryOptions = useMemo(() => countryList().getData(), []);
   const genreOptions = useMemo(() => genres, []);
@@ -41,18 +51,56 @@ function ListingManager({ item }) {
       dispatch(reset());
     }
     if (isSuccess) {
-      toast(message);
+      toast("Listing saved! You can now attach photos.");
+      const section = document.querySelector("#photoSection");
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+      dispatch(reset());
     }
-  }, [user, navigate, dispatch]);
+    if (isPhotoUploaded) {
+      toast(message);
+      dispatch(reset());
+    }
+  }, [user, listing, navigate, dispatch]);
 
   const onCountryChange = (value) => {
     setCountry(value);
   };
+
   const onGenreChange = (value) => {
     setGenres(value);
   };
-  const onSubmit = (value) => {
+
+  const onSubmit = (e) => {
     e.preventDefault();
+    const reqData = {
+      entity: {
+        id: listing ? listing.id : null,
+        title,
+        country: country.label,
+        city,
+        author,
+        edition,
+        year,
+        genre,
+        notes,
+      },
+      token: user.Token,
+    };
+    dispatch(ManageListing(reqData));
+  };
+
+  const uploadPhoto = (reqData) => {
+    dispatch(UploadPhoto(reqData));
+  };
+
+  const deletePhoto = () => {
+    const reqData = {
+      id: selectedID,
+      token: user.Token,
+    };
+    // dispatch(DeletePhoto(reqData));
+    setConfirmState(false);
+    setID(null);
   };
 
   return (
@@ -60,10 +108,10 @@ function ListingManager({ item }) {
       {user ? (
         <>
           <div className="content content-wrapper">
-            <div className="h-items form-gap">
-              <div className="multi r-gap-10">
+            <div className="h-items form-gap single">
+              <div className="single r-gap-10">
                 <section className="section-header t-margin-1">
-                  <h3>New Listing</h3>
+                  <h3>{title ? title : "New Listing"}</h3>
                 </section>
                 <section className="section-forms">
                   <form
@@ -179,18 +227,73 @@ function ListingManager({ item }) {
                         }))
                       }
                     />
-                    <button className="btn-function">Submit Listing</button>
+                    <button className="btn-function">
+                      Submit Listing & Add Photos
+                    </button>
                   </form>
                 </section>
               </div>
-              <div className="multi r-gap-10">
-                <section className="section-header t-margin-1">
-                  <h3>Photos</h3>
-                </section>
-                <section className="section-forms"></section>
-              </div>
+              {listing ? (
+                <div className="single r-gap-10">
+                  <section className="section-header t-margin-1">
+                    <h3>Photos</h3>
+                  </section>
+                  <section className="section-forms" id="photoSection">
+                    <ul className="h-list c-gap-10 r-gap-10 boxes">
+                      {listing.photos
+                        ? listing.photos.map((photo, index) => (
+                            <li className="photo" key={index}>
+                              <div className="photo-info">
+                                <h4>photo</h4>
+                              </div>
+                              <div className="functions c-gap-10">
+                                <button
+                                  className="btn-remove"
+                                  onClick={() => {
+                                    setConfirmState(true);
+                                  }}
+                                >
+                                  <BsXOctagonFill />
+                                </button>
+                              </div>
+                            </li>
+                          ))
+                        : ""}
+
+                      <li>
+                        <div>
+                          <button
+                            className="btn-function"
+                            onClick={() => {
+                              setPhotoState(true);
+                            }}
+                          >
+                            Add a new photo
+                          </button>
+                        </div>
+                      </li>
+                    </ul>
+                  </section>
+                </div>
+              ) : (
+                ""
+              )}
             </div>
           </div>
+          {photoActive ? (
+            <PhotoManager
+              listing={listing}
+              modalControl={setPhotoState}
+              func={uploadPhoto}
+            />
+          ) : (
+            ""
+          )}
+          {confirmActive ? (
+            <Confirmation func={deletePhoto} modalControl={setConfirmState} />
+          ) : (
+            ""
+          )}
         </>
       ) : (
         ""

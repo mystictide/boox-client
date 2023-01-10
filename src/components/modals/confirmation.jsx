@@ -15,7 +15,7 @@ function Confirmation({ func, modalControl }) {
       <div className="modal-overlay"></div>
       <div className="modal-content address">
         <section className="heading">
-          <h1>New Address</h1>
+          <h1>Confirm</h1>
           <FaTimes
             onClick={() => {
               modalControl(false);
@@ -26,7 +26,7 @@ function Confirmation({ func, modalControl }) {
           <div className="v-items r-gap-10">
             <label>Are you sure you want to do this?</label>
             <button
-              className="btn-edit"
+              className="btn-edit btn-function"
               onClick={() => {
                 func();
               }}
@@ -34,7 +34,7 @@ function Confirmation({ func, modalControl }) {
               Yes
             </button>
             <button
-              className="btn-remove"
+              className="btn-remove btn-function"
               onClick={() => {
                 modalControl(false);
               }}
