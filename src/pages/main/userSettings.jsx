@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { BsFillGearFill, BsXOctagonFill } from "react-icons/bs";
-import { modalSlice } from "../../features/helpers/modalSlice";
 import AddressManager from "../../components/modals/addressManager";
 import {
   DeleteAddress,

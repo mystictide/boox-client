@@ -1,6 +1,6 @@
 import axios from "axios";
 import Cookies from "universal-cookie";
-import { setExpirationDate } from "../../assets/js/helpers";
+import { buildFilterURL, setExpirationDate } from "../../assets/js/helpers";
 
 const API_URL = "https://localhost:7092/listing/";
 const headers = {
@@ -79,10 +79,70 @@ const manageListing = async (reqData) => {
   return data;
 };
 
+const getListing = async (reqData) => {
+  var config = {
+    method: "get",
+    url: API_URL + "get/listing?ID=" + reqData.id,
+    headers: headers,
+  };
+
+  var data = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      return { data: error.response.data, status: error.response.status };
+    });
+
+  return data;
+};
+
+const filteredListing = async (reqData) => {
+  var config = {
+    method: "get",
+    url: API_URL + "filter/" + buildFilterURL(reqData),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  var data = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      return { data: error.response.data, status: error.response.status };
+    });
+  return data;
+};
+
+const filteredSelfListing = async (reqData) => {
+  var config = {
+    method: "get",
+    url: API_URL + "filter/self" + buildFilterURL(reqData),
+    headers: {
+      Authorization: "Bearer " + reqData.token,
+      "Content-Type": "application/json",
+    },
+  };
+
+  var data = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      return { data: error.response.data, status: error.response.status };
+    });
+  return data;
+};
+
 const listingService = {
   getGenres,
   uploadPhoto,
   manageListing,
+  getListing,
+  filteredListing,
+  filteredSelfListing,
 };
 
 export default listingService;

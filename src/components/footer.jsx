@@ -37,7 +37,7 @@ function Footer() {
           </ul>
         </div>
         <h6 className="copyright">
-          © Boox - Exchanger. Made by a lone mad-man with copious amount of coffee.
+          © {new Date().getFullYear()} Boox - Exchanger
         </h6>
       </div>
     </footer>

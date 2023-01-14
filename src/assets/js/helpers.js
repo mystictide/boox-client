@@ -35,3 +35,13 @@ export function formatPrettyURL(string) {
 export function decodeURL(string) {
   return string.toString().replaceAll("-", " ");
 }
+
+export function buildFilterURL(reqData) {
+  let url = "?Keyword=" + reqData.keyword;
+  if (reqData.page > 1) {
+    url += "&page=" + reqData.page;
+  } else {
+    url += "&page=1";
+  }
+  return url;
+}

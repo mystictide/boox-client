@@ -15,9 +15,13 @@ function App() {
           <Header />
           <div id="main" className="main">
             <Routes>
-              <Route path="/" element={<Home />}></Route>
+              <Route path="/">
+                <Route path=":param" element={<Home />} />
+                <Route path="" element={<Home />} />
+              </Route>
               <Route path="/settings" element={<UserSettings />}></Route>
               <Route path="/listing/new" element={<ListingManager />}></Route>
+              <Route path="/listing/:id" element={<ListingManager />}></Route>
             </Routes>
           </div>
           <Footer />

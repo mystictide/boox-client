@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import Select from "react-select";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   ManageListing,
   reset,
@@ -13,15 +13,17 @@ import { BsXOctagonFill } from "react-icons/bs";
 import PhotoManager from "../../components/modals/photoManager";
 import Confirmation from "../../components/modals/confirmation";
 
-function ListingManager({ item }) {
+function ListingManager() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { state } = useLocation();
 
   const { user } = useSelector((state) => state.auth);
   const { listing, genres, isSuccess, isPhotoUploaded, isError, message } =
     useSelector((state) => state.listing);
-  const [country, setCountry] = useState(item ? { label: item.country } : "");
-  const [genre, setGenres] = useState(item ? { label: item.genres } : "");
+  const [item, setItem] = useState(state ? state.item : null);
+  const [country, setCountry] = useState(item ? { label: item.Country } : "");
+  const [genre, setGenres] = useState(item ? { label: item.Genre } : "");
 
   const [confirmActive, setConfirmState] = useState(false);
   const [photoActive, setPhotoState] = useState(false);
@@ -31,18 +33,19 @@ function ListingManager({ item }) {
   const genreOptions = useMemo(() => genres, []);
   const [formData, setFormData] = useState({
     id: item ? item.ID : "",
-    title: item ? item.title : "",
-    author: item ? item.author : "",
-    edition: item ? item.edition : "",
-    country: item ? item.country : "",
-    city: item ? item.city : "",
-    year: item ? item.year : "",
-    notes: item ? item.notes : "",
+    title: item ? item.Title : "",
+    author: item ? item.Author : "",
+    edition: item ? item.Edition : "",
+    country: item ? item.Country : "",
+    city: item ? item.City : "",
+    year: item ? item.Year : "",
+    notes: item ? item.Notes : "",
   });
 
   const { title, author, edition, city, year, notes } = formData;
 
   useEffect(() => {
+    console.log(item)
     if (!user) {
       navigate("/");
     }
