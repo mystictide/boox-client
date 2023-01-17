@@ -1,9 +1,9 @@
 import { useState } from "react";
+import { BiSearch } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import RegisterModal from "./account/register";
 import LoginModal from "./account/login";
-import { BiSearch } from "react-icons/bi";
+import RegisterModal from "./account/register";
 import UserDropdown from "./helpers/userDropdown";
 
 const Header = () => {
@@ -12,6 +12,7 @@ const Header = () => {
   const [userDropdown, setUserDropdown] = useState(false);
   const [loginActive, setLoginState] = useState(false);
   const [registerActive, setRegisterState] = useState(false);
+  const [keyword, setKeyword] = useState("");
 
   return (
     <>
@@ -22,8 +23,16 @@ const Header = () => {
           </Link>
           <ul className="h-list c-gap-10">
             <li className="search-box hide">
-              <input className="search" placeholder="look up a book.." />
-              <button type="button">
+              <input
+                className="search"
+                type="text"
+                id="keyword"
+                name="keyword"
+                value={keyword}
+                placeholder="look up a book.."
+                onChange={(e) => setKeyword(e.target.value)}
+              />
+              <button type="button" onClick={() => navigate(`/${keyword}`)}>
                 <BiSearch />
               </button>
             </li>

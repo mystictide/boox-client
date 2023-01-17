@@ -1,8 +1,7 @@
 import { useEffect } from "react";
+import { FaTimes } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { FaTimes } from "react-icons/fa";
-import { modalSlice } from "../../features/helpers/modalSlice";
 
 function Confirmation({ func, modalControl }) {
   const dispatch = useDispatch();

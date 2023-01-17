@@ -1,9 +1,6 @@
-import Search from "./search";
-
-function Pager({ data, setFilter, setKeyword, keyword }) {
+function Pager({ data, setFilter, filterModel }) {
   return (
     <div className="t-margin-1 h-items c-gap-10">
-      <Search setFilter={setFilter} setKeyword={setKeyword} keyword={keyword} />
       {data.filter.pager.TotalPages > 1 ? (
         <div className="multi pager-container">
           <ul className="pager-data">
@@ -11,7 +8,7 @@ function Pager({ data, setFilter, setKeyword, keyword }) {
               <li className="pager-item">
                 <button
                   className="pager-button"
-                  onClick={(e) => setFilter(e, 1)}
+                  onClick={(e) => setFilter(e, 1, filterModel)}
                 >
                   {"<<"}
                 </button>{" "}
@@ -24,7 +21,7 @@ function Pager({ data, setFilter, setKeyword, keyword }) {
                 <button
                   className="pager-button"
                   onClick={(e) =>
-                    setFilter(e, data.filter.pager.CurrentPage - 1)
+                    setFilter(e, data.filter.pager.CurrentPage - 1, filterModel)
                   }
                 >
                   Previous
@@ -40,7 +37,7 @@ function Pager({ data, setFilter, setKeyword, keyword }) {
                 <button
                   className="pager-button"
                   onClick={(e) =>
-                    setFilter(e, data.filter.pager.CurrentPage + 1)
+                    setFilter(e, data.filter.pager.CurrentPage + 1, filterModel)
                   }
                 >
                   Next
@@ -53,7 +50,9 @@ function Pager({ data, setFilter, setKeyword, keyword }) {
               <li className="pager-item">
                 <button
                   className="pager-button"
-                  onClick={(e) => setFilter(e, data.filter.pager.TotalPages)}
+                  onClick={(e) =>
+                    setFilter(e, data.filter.pager.TotalPages, filterModel)
+                  }
                 >
                   {">>"}
                 </button>

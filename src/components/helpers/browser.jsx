@@ -1,24 +1,35 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PropagateLoader } from "react-spinners";
-import { useSelector, useDispatch } from "react-redux";
 import {
   FilteredListing,
   FilteredSelfListing,
-  reset,
+  reset
 } from "../../features/listing/listingSlice";
-import Pager from "./pager";
 import ListingBoxes from "../listing/listingboxes";
+import Pager from "./pager";
+import Search from "./search";
 
-function Browser({ self }) {
+function Browser({ self, param }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
-  const [keyword, setKeyword] = useState("");
+  const [keyword, setKeyword] = useState(self ? "" : param);
+  const [filter, setFilterModel] = useState(null);
   const { user } = useSelector((state) => state.auth);
   const { browser, isLoading, isSuccess } = useSelector(
     (state) => state.listing
   );
+
+  useEffect(() => {
+    if (!self) {
+      setKeyword(param);
+      const reqData = { keyword: param, page: 1 };
+      dispatch(FilteredListing(reqData));
+    }
+  }, [location.key]);
 
   useEffect(() => {
     if (!browser && self) {
@@ -34,14 +45,28 @@ function Browser({ self }) {
     }
   }, [browser, self, navigate, dispatch]);
 
-  const setFilter = (e, page) => {
-    if (!self) {
-      const reqData = { keyword: keyword, page: page };
-      dispatch(FilteredListing(reqData));
-    }
+  const setFilter = (e, page, filter) => {
+    setFilterModel(filter);
     if (self) {
-      const reqData = { keyword: keyword, page: page, token: user.Token };
+      if (filter) {
+        const reqData = {
+          keyword: keyword,
+          page: page,
+          token: user.Token,
+          filterModel: filter,
+        };
+      } else {
+        const reqData = { keyword: keyword, page: page, token: user.Token };
+      }
       dispatch(FilteredSelfListing(reqData));
+    }
+    if (!self) {
+      if (filter) {
+        const reqData = { keyword: keyword, page: page, filterModel: filter };
+      } else {
+        const reqData = { keyword: keyword, page: page };
+      }
+      dispatch(FilteredListing(reqData));
     }
   };
 
@@ -52,28 +77,38 @@ function Browser({ self }) {
           <PropagateLoader color="#2b3a55" size={10} speedMultiplier={0.6} />
         </div>
       ) : (
-        <div className="h-items single">
-          {browser && browser.data ? (
-            <>
-              <span>
-                {browser.filter.Keyword
-                  ? browser.totalItems > 0
-                    ? `Found ${browser.totalItems} offers for "${browser.filter.Keyword}"`
-                    : `No matching results found for "${keyword}"`
-                  : `Showing latest ${browser.totalItems} offer(s)`}
-              </span>
-              <Pager
-                data={browser}
+        <>
+          <div className="h-items form-gap r-gap-10">
+            <div className="v-items sidebar">
+              <Search
                 setFilter={setFilter}
                 setKeyword={setKeyword}
                 keyword={keyword}
               />
-              <ListingBoxes data={browser.data} self={self} />
-            </>
-          ) : (
-            ""
-          )}
-        </div>
+            </div>
+            <div className="h-items single">
+              {browser && browser.data ? (
+                <>
+                  <span>
+                    {browser.filter.Keyword
+                      ? browser.totalItems > 0
+                        ? `Found ${browser.totalItems} offers for "${browser.filter.Keyword}"`
+                        : `No matching results found for "${keyword}"`
+                      : `Showing latest ${browser.totalItems} offer(s)`}
+                  </span>
+                  <Pager
+                    data={browser}
+                    setFilter={setFilter}
+                    filterModel={filter}
+                  />
+                  <ListingBoxes data={browser.data} self={self} />
+                </>
+              ) : (
+                ""
+              )}
+            </div>
+          </div>
+        </>
       )}
     </>
   );

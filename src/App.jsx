@@ -1,11 +1,11 @@
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Footer from "./components/footer";
 import Header from "./components/header";
+import ListingManager from "./pages/listing/listingManager";
 import Home from "./pages/main/home";
 import UserSettings from "./pages/main/userSettings";
-import Footer from "./components/footer";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ListingManager from "./pages/listing/listingManager";
 
 function App() {
   return (

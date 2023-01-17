@@ -1,17 +1,17 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { toast } from "react-toastify";
-import Select from "react-select";
+import { useEffect, useMemo, useState } from "react";
+import { BsXOctagonFill } from "react-icons/bs";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
+import Select from "react-select";
+import countryList from "react-select-country-list";
+import { toast } from "react-toastify";
+import Confirmation from "../../components/modals/confirmation";
+import PhotoManager from "../../components/modals/photoManager";
 import {
   ManageListing,
   reset,
-  UploadPhoto,
+  UploadPhoto
 } from "../../features/listing/listingSlice";
-import countryList from "react-select-country-list";
-import { BsXOctagonFill } from "react-icons/bs";
-import PhotoManager from "../../components/modals/photoManager";
-import Confirmation from "../../components/modals/confirmation";
 
 function ListingManager() {
   const navigate = useNavigate();

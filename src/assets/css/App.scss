@@ -222,7 +222,7 @@ button {
 .btn-remove {
     display: inline-block;
     border-radius: 3px;
-    color: #e23e15;
+    color: #a94127;
     font-size: 1.3rem;
     @include button-hover-color();
 }
@@ -401,6 +401,12 @@ a {
                 width: 100%;
             }
 
+            .sidebar {
+                display: flex;
+                flex-direction: column;
+                width: 30%;
+            }
+
             .form-gap {
                 column-gap: 2rem;
             }
@@ -420,12 +426,13 @@ a {
                     color: $bg-dark;
                     border-radius: 3px;
 
-                    .address-info {
+                    .info {
                         display: flex;
                         flex-direction: column;
                         justify-content: center;
                         align-items: center;
-                        height: 75%;
+                        text-align: center;
+                        height: 77%;
                         width: 100%;
                     }
                     .photo-info {
@@ -450,7 +457,19 @@ a {
                     background-color: $bg-main;
                 }
                 li.listing {
-                    height: 150px;
+                    height: 140px;
+                    color: $bg-main;
+                    background-color: $bg-dark;
+                    .activity {
+                        font-size: 0.8rem;
+                        padding: 10px 10px;
+                        border-radius: 0;
+                        border-top-left-radius: 3px;
+                        border-bottom-right-radius: 3px;
+                    }
+                }
+                li.listing.passive {
+                    opacity: 0.7;
                     background-color: $bg-light;
                 }
             }
@@ -542,7 +561,7 @@ a {
         min-width: 400px;
         padding: 1.7rem 2.5rem;
         z-index: 9;
-
+        color: $bg-main;
         .heading {
             font-size: 0.8rem;
             display: flex;
@@ -634,6 +653,9 @@ a {
             .multi {
                 width: 50% !important;
             }
+            .sidebar {
+                width: 30% !important;
+            }
         }
     }
     .page-container .main .content .boxes li.listing {
@@ -654,6 +676,9 @@ a {
         .h-items {
             flex-direction: column;
             .multi {
+                width: 100% !important;
+            }
+            .sidebar {
                 width: 100% !important;
             }
         }
@@ -677,6 +702,9 @@ a {
         .h-items {
             flex-direction: column;
             .multi {
+                width: 100% !important;
+            }
+            .sidebar {
                 width: 100% !important;
             }
         }

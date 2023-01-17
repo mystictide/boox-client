@@ -160,7 +160,7 @@ function UserSettings() {
                     {user.Addresses
                       ? user.Addresses.map((address, index) => (
                           <li className="address" key={index}>
-                            <div className="address-info">
+                            <div className="info">
                               <h4>{address.title}</h4>
                               <h6>
                                 {address.city}, {address.country}

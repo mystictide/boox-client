@@ -143,6 +143,27 @@ export const ManageListing = createAsyncThunk(
   }
 );
 
+export const DeleteListing = createAsyncThunk(
+  "listing/delete",
+  async (reqData, thunkAPI) => {
+    try {
+      const response = await listingService.deleteListing(reqData);
+      if (response.status === 500) {
+        return thunkAPI.rejectWithValue(response);
+      }
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 export const listingSlice = createSlice({
   name: "listing",
   initialState,
@@ -174,6 +195,21 @@ export const listingSlice = createSlice({
         state.listing = action.payload;
       })
       .addCase(ManageListing.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(DeleteListing.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(DeleteListing.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.listing = action.payload;
+      })
+      .addCase(DeleteListing.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;

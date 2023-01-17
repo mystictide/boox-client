@@ -79,6 +79,28 @@ const manageListing = async (reqData) => {
   return data;
 };
 
+const deleteListing = async (reqData) => {
+  var config = {
+    method: "get",
+    url: API_URL + "delete?ID=" + reqData.id,
+    headers: {
+      Authorization: "Bearer " + reqData.token,
+      "Content-Type": "application/json",
+    },
+  };
+
+  var data = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return { data: error.response.data, status: error.response.status };
+    });
+
+  return data;
+};
+
 const getListing = async (reqData) => {
   var config = {
     method: "get",
@@ -140,6 +162,7 @@ const listingService = {
   getGenres,
   uploadPhoto,
   manageListing,
+  deleteListing,
   getListing,
   filteredListing,
   filteredSelfListing,

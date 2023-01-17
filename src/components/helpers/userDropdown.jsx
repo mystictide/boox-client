@@ -22,7 +22,7 @@ function UserDropdown({ setUserDropdown }) {
         <div className="dropdown-content v-list">
           <ul>
             <li>
-              <Link to={`/`}>Listings</Link>
+              <Link to={`/self`}>Listings</Link>
             </li>
             <li>
               <Link to={`/`}>Messages</Link>

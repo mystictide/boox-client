@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { BsFillGearFill } from "react-icons/bs";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { DeleteListing } from "../../features/listing/listingSlice";
 import Confirmation from "../modals/confirmation";
-import { BsFillGearFill, BsXOctagonFill } from "react-icons/bs";
 
 function ListingBoxes({ data, self }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   const [selectedID, setID] = useState(null);
   const [confirmActive, setConfirmState] = useState(false);
 
@@ -22,7 +26,7 @@ function ListingBoxes({ data, self }) {
       id: selectedID,
       token: user.Token,
     };
-    // dispatch(DeleteList(reqData));
+    dispatch(DeleteListing(reqData));
     setConfirmState(false);
     setID(null);
   };
@@ -31,8 +35,11 @@ function ListingBoxes({ data, self }) {
     <>
       <ul className="h-list c-gap-10 r-gap-10 t-margin-1 boxes uncentered">
         {data.map((item, index) => (
-          <li className="listing" key={index}>
-            <div className="address-info">
+          <li
+            className={`listing ${item.IsActive ? "" : "passive"}`}
+            key={index}
+          >
+            <div className="info">
               <h4>{item.Title}</h4>
             </div>
             {self ? (
@@ -46,12 +53,12 @@ function ListingBoxes({ data, self }) {
                   <BsFillGearFill />
                 </button>
                 <button
-                  className="btn-remove"
+                  className="btn-function activity"
                   onClick={() => {
                     getConfirm(item.ID);
                   }}
                 >
-                  <BsXOctagonFill />
+                  {item.IsActive ? "Hide" : "Publicize"}
                 </button>
               </div>
             ) : (
