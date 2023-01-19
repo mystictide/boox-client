@@ -43,5 +43,18 @@ export function buildFilterURL(reqData) {
   } else {
     url += "&page=1";
   }
+  if (reqData.filterModel) {
+    if (reqData.filterModel.genres) {
+      let mapped = reqData.filterModel.genres.map((item) => item.ID);
+      let ids = mapped.join(",");
+      url += "&genres=" + ids;
+    }
+    if (reqData.filterModel.country) {
+      url += "&country=" + reqData.filterModel.country;
+    }
+    if (reqData.filterModel.author) {
+      url += "&author=" + reqData.filterModel.author;
+    }
+  }
   return url;
 }

@@ -4,39 +4,45 @@ import Select from "react-select";
 import countryList from "react-select-country-list";
 
 function Search({ setFilter, setKeyword, keyword }) {
+  const { browser } = useSelector((state) => state.listing);
   const { genres } = useSelector((state) => state.listing);
-
   const countryOptions = useMemo(() => countryList().getData(), []);
   const genreOptions = useMemo(() => genres, []);
 
-  const [country, setCountry] = useState("");
-  const [genre, setGenres] = useState("");
-  const [author, setAuthor] = useState("");
+  const [genre, setGenres] = useState(
+    browser.filterModel.Genre ? browser.filterModel.Genre : ""
+  );
+  const [author, setAuthor] = useState(
+    browser.filterModel.Author ? browser.filterModel.Author : ""
+  );
+  const [country, setCountry] = useState(
+    browser.filterModel.Country ? { label: browser.filterModel.Country } : ""
+  );
   const [filterModel, setFilterModel] = useState({
     author: author,
     genres: genre,
-    country: country,
+    country: country.label,
   });
 
   const onCountryChange = (value) => {
     setCountry(value);
     setFilterModel((prevState) => ({
       ...prevState,
-      [country]: value,
+      country: value.label,
     }));
   };
   const onGenreChange = (value) => {
     setGenres(value);
     setFilterModel((prevState) => ({
       ...prevState,
-      [genres]: value,
+      genres: value,
     }));
   };
   const onAuthorChange = (value) => {
     setAuthor(value);
     setFilterModel((prevState) => ({
       ...prevState,
-      [author]: value,
+      author: value,
     }));
   };
 
@@ -46,12 +52,13 @@ function Search({ setFilter, setKeyword, keyword }) {
       <Select
         isMulti
         className="select"
-        id="genres"
-        name="genres"
+        id="genre"
+        name="genre"
         placeholder={"select genres"}
         options={genreOptions}
         getOptionLabel={(options) => options["name"]}
         getOptionValue={(options) => options["ID"]}
+        value={genre}
         onChange={onGenreChange}
       />
       <label>Country</label>
@@ -61,6 +68,8 @@ function Search({ setFilter, setKeyword, keyword }) {
         name="country"
         placeholder={"select country"}
         options={countryOptions}
+        getOptionLabel={(options) => options["label"]}
+        getOptionValue={(options) => options["value"]}
         value={country}
         onChange={onCountryChange}
       />

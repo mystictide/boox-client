@@ -24,7 +24,7 @@ function Browser({ self, param }) {
   );
 
   useEffect(() => {
-    if (!self) {
+    if (browser && !self) {
       setKeyword(param);
       const reqData = { keyword: param, page: 1 };
       dispatch(FilteredListing(reqData));
@@ -48,23 +48,25 @@ function Browser({ self, param }) {
   const setFilter = (e, page, filter) => {
     setFilterModel(filter);
     if (self) {
+      let reqData = "";
       if (filter) {
-        const reqData = {
+        reqData = {
           keyword: keyword,
           page: page,
           token: user.Token,
           filterModel: filter,
         };
       } else {
-        const reqData = { keyword: keyword, page: page, token: user.Token };
+        reqData = { keyword: keyword, page: page, token: user.Token };
       }
       dispatch(FilteredSelfListing(reqData));
     }
     if (!self) {
+      let reqData = "";
       if (filter) {
-        const reqData = { keyword: keyword, page: page, filterModel: filter };
+        reqData = { keyword: keyword, page: page, filterModel: filter };
       } else {
-        const reqData = { keyword: keyword, page: page };
+        reqData = { keyword: keyword, page: page };
       }
       dispatch(FilteredListing(reqData));
     }
@@ -80,11 +82,15 @@ function Browser({ self, param }) {
         <>
           <div className="h-items form-gap r-gap-10">
             <div className="v-items sidebar">
-              <Search
-                setFilter={setFilter}
-                setKeyword={setKeyword}
-                keyword={keyword}
-              />
+              {browser && browser.filterModel ? (
+                <Search
+                  setFilter={setFilter}
+                  setKeyword={setKeyword}
+                  keyword={keyword}
+                />
+              ) : (
+                ""
+              )}
             </div>
             <div className="h-items single">
               {browser && browser.data ? (

@@ -1,6 +1,6 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import Cookies from "universal-cookie";
 import listingService from "./listingService";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const cookies = new Cookies();
 const listing = cookies.get("listing");
