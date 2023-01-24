@@ -175,6 +175,14 @@ export const listingSlice = createSlice({
       state.isError = false;
       state.message = "";
     },
+    resetBrowser: (state) => {
+      state.browser = null;
+    },
+    resetListing: (state) => {
+      const cookies = new Cookies();
+      cookies.remove("listing");
+      state.listing = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -263,5 +271,5 @@ export const listingSlice = createSlice({
   },
 });
 
-export const { reset } = listingSlice.actions;
+export const { reset, resetBrowser, resetListing } = listingSlice.actions;
 export default listingSlice.reducer;

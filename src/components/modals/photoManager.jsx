@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { FaTimes } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { FaTimes } from "react-icons/fa";
 import { blobToBase64 } from "../../assets/js/helpers";
 
 function PhotoManager({ listing, modalControl, func }) {
   const [formData, setFormData] = useState({
-    id: listing ? listing.id : null,
+    listingid: listing ? listing.ID : null,
     data: "",
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
-  const { id, data } = formData;
+  const { listingid, data } = formData;
 
   useEffect(() => {}, [user, navigate, dispatch]);
 
@@ -21,7 +21,7 @@ function PhotoManager({ listing, modalControl, func }) {
 
     const reqData = {
       entity: {
-        id,
+        listingid,
         data,
       },
       token: user.Token,

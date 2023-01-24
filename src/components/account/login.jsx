@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { FaTimes } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { login } from "../../features/auth/authSlice";
-import { FaTimes } from "react-icons/fa";
 
 function Login({ modalControl }) {
   const [formData, setFormData] = useState({
@@ -22,6 +22,7 @@ function Login({ modalControl }) {
       toast.error(message);
     }
     if (isSuccess || (user !== null && user.Token !== null)) {
+      modalControl(false);
       navigate("/");
     }
   }, [user, isError, isSuccess, message, navigate, dispatch]);

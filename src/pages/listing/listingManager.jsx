@@ -10,6 +10,7 @@ import PhotoManager from "../../components/modals/photoManager";
 import {
   ManageListing,
   reset,
+  resetListing,
   UploadPhoto
 } from "../../features/listing/listingSlice";
 
@@ -19,11 +20,19 @@ function ListingManager() {
   const { state } = useLocation();
 
   const { user } = useSelector((state) => state.auth);
-  const { listing, genres, isSuccess, isPhotoUploaded, isError, message } =
-    useSelector((state) => state.listing);
-  const [item, setItem] = useState(state ? state.item : null);
-  const [country, setCountry] = useState(item ? { label: item.Country } : "");
-  const [genre, setGenres] = useState(item ? { label: item.Genre } : "");
+  const {
+    listing,
+    genres,
+    isLoading,
+    isSuccess,
+    isPhotoUploaded,
+    isError,
+    message,
+  } = useSelector((state) => state.listing);
+  const [country, setCountry] = useState(
+    listing ? { label: listing.Country } : ""
+  );
+  const [genre, setGenres] = useState(listing ? listing.Genre : "");
 
   const [confirmActive, setConfirmState] = useState(false);
   const [photoActive, setPhotoState] = useState(false);
@@ -32,20 +41,25 @@ function ListingManager() {
   const countryOptions = useMemo(() => countryList().getData(), []);
   const genreOptions = useMemo(() => genres, []);
   const [formData, setFormData] = useState({
-    id: item ? item.ID : "",
-    title: item ? item.Title : "",
-    author: item ? item.Author : "",
-    edition: item ? item.Edition : "",
-    country: item ? item.Country : "",
-    city: item ? item.City : "",
-    year: item ? item.Year : "",
-    notes: item ? item.Notes : "",
+    id: listing ? listing.ID : "",
+    title: listing ? listing.Title : "",
+    author: listing ? listing.Author : "",
+    edition: listing ? listing.Edition : "",
+    country: listing ? listing.Country : "",
+    city: listing ? listing.City : "",
+    year: listing ? listing.Year : "",
+    notes: listing ? listing.Notes : "",
   });
 
   const { title, author, edition, city, year, notes } = formData;
 
   useEffect(() => {
-    console.log(item)
+    return () => {
+      dispatch(resetListing());
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
     if (!user) {
       navigate("/");
     }
@@ -53,14 +67,14 @@ function ListingManager() {
       toast(message);
       dispatch(reset());
     }
-    if (isSuccess) {
+    if (isSuccess && !state) {
       toast("Listing saved! You can now attach photos.");
       const section = document.querySelector("#photoSection");
       section.scrollIntoView({ behavior: "smooth", block: "start" });
       dispatch(reset());
     }
     if (isPhotoUploaded) {
-      toast(message);
+      toast("photo uploaded successfully!");
       dispatch(reset());
     }
   }, [user, listing, navigate, dispatch]);
@@ -77,7 +91,7 @@ function ListingManager() {
     e.preventDefault();
     const reqData = {
       entity: {
-        id: listing ? listing.id : null,
+        id: listing ? listing.ID : null,
         title,
         country: country.label,
         city,
@@ -93,12 +107,13 @@ function ListingManager() {
   };
 
   const uploadPhoto = (reqData) => {
-    dispatch(UploadPhoto(reqData));
+    dispatch(UploadPhoto(reqData)).then(() => setPhotoState(false));
   };
 
   const deletePhoto = () => {
     const reqData = {
       id: selectedID,
+      listingid: listing.ID,
       token: user.Token,
     };
     // dispatch(DeletePhoto(reqData));
@@ -108,13 +123,15 @@ function ListingManager() {
 
   return (
     <>
-      {user ? (
+      {!isLoading && user ? (
         <>
           <div className="content content-wrapper">
             <div className="h-items form-gap single">
               <div className="single r-gap-10">
                 <section className="section-header t-margin-1">
-                  <h3>{title ? title : "New Listing"}</h3>
+                  <h3>
+                    {title ? title : listing ? listing.Title : "New Listing"}
+                  </h3>
                 </section>
                 <section className="section-forms">
                   <form
@@ -126,7 +143,7 @@ function ListingManager() {
                       type="text"
                       id="title"
                       name="title"
-                      value={title}
+                      value={title ? title : listing ? listing.Title : ""}
                       placeholder={"add a listing title for all to see"}
                       onChange={(e) =>
                         setFormData((prevState) => ({
@@ -140,7 +157,7 @@ function ListingManager() {
                       type="text"
                       id="author"
                       name="author"
-                      value={author}
+                      value={author ? author : listing ? listing.Author : ""}
                       placeholder={"who wrote this book?"}
                       onChange={(e) =>
                         setFormData((prevState) => ({
@@ -154,7 +171,7 @@ function ListingManager() {
                       type="text"
                       id="edition"
                       name="edition"
-                      value={edition}
+                      value={edition ? edition : listing ? listing.Edition : ""}
                       placeholder={"add the edition information"}
                       onChange={(e) =>
                         setFormData((prevState) => ({
@@ -173,7 +190,7 @@ function ListingManager() {
                       options={genreOptions}
                       getOptionLabel={(options) => options["name"]}
                       getOptionValue={(options) => options["ID"]}
-                      defaultValue={genre}
+                      value={genre ? genre : listing ? listing.Genre : ""}
                       onChange={onGenreChange}
                     />
                     <label>Country</label>
@@ -183,7 +200,15 @@ function ListingManager() {
                       name="country"
                       placeholder={"where do you live?"}
                       options={countryOptions}
-                      value={country}
+                      getOptionLabel={(options) => options["label"]}
+                      getOptionValue={(options) => options["value"]}
+                      value={
+                        country
+                          ? country
+                          : listing
+                          ? { label: listing.Country }
+                          : ""
+                      }
                       onChange={onCountryChange}
                     />
                     <label>City</label>
@@ -191,7 +216,7 @@ function ListingManager() {
                       type="text"
                       id="city"
                       name="city"
-                      value={city}
+                      value={city ? city : listing ? listing.City : ""}
                       placeholder={"and in what city?"}
                       onChange={(e) =>
                         setFormData((prevState) => ({
@@ -205,7 +230,7 @@ function ListingManager() {
                       type="number"
                       id="year"
                       name="year"
-                      value={year}
+                      value={year ? year : listing ? listing.Year : ""}
                       placeholder={"what year was this book released in?"}
                       min="1"
                       max="2023"
@@ -221,7 +246,7 @@ function ListingManager() {
                       type="text"
                       id="notes"
                       name="notes"
-                      value={notes}
+                      value={notes ? notes : listing ? listing.Notes : ""}
                       placeholder={"add some notes about this book"}
                       onChange={(e) =>
                         setFormData((prevState) => ({

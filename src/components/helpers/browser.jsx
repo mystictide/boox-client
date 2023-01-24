@@ -5,7 +5,8 @@ import { PropagateLoader } from "react-spinners";
 import {
   FilteredListing,
   FilteredSelfListing,
-  reset
+  reset,
+  resetBrowser
 } from "../../features/listing/listingSlice";
 import ListingBoxes from "../listing/listingboxes";
 import Pager from "./pager";
@@ -24,6 +25,18 @@ function Browser({ self, param }) {
   );
 
   useEffect(() => {
+    return () => {
+      dispatch(reset());
+      dispatch(resetBrowser());
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (browser && self) {
+      setKeyword(param);
+      const reqData = { keyword: keyword, page: 1, token: user.Token };
+      dispatch(FilteredSelfListing(reqData));
+    }
     if (browser && !self) {
       setKeyword(param);
       const reqData = { keyword: param, page: 1 };

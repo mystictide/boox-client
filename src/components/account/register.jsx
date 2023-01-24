@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { FaTimes } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { register } from "../../features/auth/authSlice";
 import {
   checkExistingMail,
-  checkExistingUsername,
+  checkExistingUsername
 } from "../../features/auth/validationSlice";
-import { useNavigate } from "react-router-dom";
-import { FaTimes } from "react-icons/fa";
 
 function Register({ modalControl }) {
   const navigate = useNavigate();
@@ -35,6 +35,7 @@ function Register({ modalControl }) {
   useEffect(() => {
     if (user) {
       navigate("/");
+      modalControl(false);
     }
     if (isError) {
       toast.error(message);

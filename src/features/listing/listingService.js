@@ -110,6 +110,11 @@ const getListing = async (reqData) => {
 
   var data = await axios(config)
     .then(function (response) {
+      const cookies = new Cookies();
+      cookies.set("listing", JSON.stringify(response.data), {
+        path: "/",
+        expires: setExpirationDate(1),
+      });
       return response.data;
     })
     .catch(function (error) {

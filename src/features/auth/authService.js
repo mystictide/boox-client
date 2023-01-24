@@ -135,7 +135,6 @@ const manageAddress = async (reqData) => {
       return response.data;
     })
     .catch(function (error) {
-      console.log(error);
       return { data: error.response.data, status: error.response.status };
     });
 

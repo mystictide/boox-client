@@ -2,7 +2,8 @@ import { useState } from "react";
 import { BsFillGearFill } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { DeleteListing } from "../../features/listing/listingSlice";
+import { formatPrettyURL } from "../../assets/js/helpers";
+import { DeleteListing, GetListing } from "../../features/listing/listingSlice";
 import Confirmation from "../modals/confirmation";
 
 function ListingBoxes({ data, self }) {
@@ -13,7 +14,14 @@ function ListingBoxes({ data, self }) {
   const [confirmActive, setConfirmState] = useState(false);
 
   const onEdit = (e) => {
-    navigate(`/listing/${e.ID}`, { state: { item: e } });
+    const reqData = {
+      id: e.ID,
+    };
+    dispatch(GetListing(reqData)).then(() =>
+      navigate(`/listing/${formatPrettyURL(e.Title)}-${e.ID}`, {
+        state: { itemID: e.ID, edit: true },
+      })
+    );
   };
 
   const getConfirm = (id) => {
